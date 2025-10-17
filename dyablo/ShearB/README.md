@@ -16,9 +16,9 @@ Depuis les premiers tests beaucoup de progrès ont été faits, néanmoins nous 
 |  Date     | Test           | Files|  Commit Hash|
 |-----------|----------------|------|-------------|
 | 2025-10-16| FiveWaves+RK2|[inifile](inifiles/fw_RK2_20251016.ini) / [output](FiveWaves_RK2/)   | b0267fd8b152086020756799d2a0ee20f61c9896[^1]|
-| 2025-10-16| FiveWaves+MUSCL-Hancock| [inifile](inifiles/fw_MH_20251016.ini) / [output](FiveWaves_hancock/)   |  b0267fd8b152086020756799d2a0ee20f61c9896 |
-| 2025-10-16| FiveWaves+Euler| [inifile](inifiles/fw_Euler_20251016.ini) / [output](FiveWaves_Euler/)| b0267fd8b152086020756799d2a0ee20f61c9896|
-|2025-10-16| HLLD&divCleaning+RK2|[inifile](inifiles/GLMMHD_RK2_20251016.ini) / [output](HLLD_RK2/)|b0267fd8b152086020756799d2a0ee20f61c9896|
+| 2025-10-16| FiveWaves+MUSCL-Hancock| [inifile](inifiles/fw_MH_20251016.ini) / [output](FiveWaves_hancock/)   |  [b0267fd8b152086020756799d2a0ee20f61c9896](https://drf-gitlab.cea.fr/dyablo/dyablo/-/tree/b0267fd8b152086020756799d2a0ee20f61c9896) |
+| 2025-10-16| FiveWaves+Euler| [inifile](inifiles/fw_Euler_20251016.ini) / [output](FiveWaves_Euler/)| [b0267fd8b152086020756799d2a0ee20f61c9896](https://drf-gitlab.cea.fr/dyablo/dyablo/-/tree/b0267fd8b152086020756799d2a0ee20f61c9896)|
+|2025-10-16| HLLD&divCleaning+RK2|[inifile](inifiles/GLMMHD_RK2_20251016.ini) / [output](HLLD_RK2/)|[b0267fd8b152086020756799d2a0ee20f61c9896](https://drf-gitlab.cea.fr/dyablo/dyablo/-/tree/b0267fd8b152086020756799d2a0ee20f61c9896)|
 
 [^1]: Pour les solveurs 5 ondes, il est encore nécessaire de désactiver la correction GLM puis de recompiler. Améliroation à venir...
 
@@ -36,10 +36,10 @@ Les différents schémas et solveurs semblent converger vers le même résultat 
 
 |  Date     | Test           | Files|  Commit Hash|
 |-----------|----------------|------|-------------|
-|2025-10-16| HLLD&divCleaning+RK2|[inifile](inifiles/GLMMHD_RK2_20251016.ini) / [output](HLLD_RK2/)|b0267fd8b152086020756799d2a0ee20f61c9896|
-|2025-10-16| HLLD&divCleaning+R2|[inifile](inifiles/GLMMHD_RK2_20251016.ini) / [output](EqualPressure/)   | 579227f8dd6bcd55b62e69b9879e914d1ee9ace2|
-|2025-10-16| HLLD&divCleaning+RK2|[inifile](inifiles/GLMMHD_RK2_20251016.ini) / [output](RecomputedPfinal/)|628bb549520dd62c6b4fbae0aa67242ea12c6a29|
-|2025-10-16| HLLD&divCleaning+RK2|[inifile](inifiles/GLMMHD_RK2_ZeroB_20251017.ini) / [output](ZeroB/)|628bb549520dd62c6b4fbae0aa67242ea12c6a29|
+|2025-10-16| HLLD&divCleaning+RK2|[inifile](inifiles/GLMMHD_RK2_20251016.ini) / [output](HLLD_RK2/)|[b0267fd8b152086020756799d2a0ee20f61c9896](https://drf-gitlab.cea.fr/dyablo/dyablo/-/tree/b0267fd8b152086020756799d2a0ee20f61c9896)|
+|2025-10-16| HLLD&divCleaning+R2|[inifile](inifiles/GLMMHD_RK2_20251016.ini) / [output](EqualPressure/)   | [155c29b7d5a8bfdf4716613331d22e08f1d64bf5](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/155c29b7d5a8bfdf4716613331d22e08f1d64bf5)|
+|2025-10-16| HLLD&divCleaning+RK2|[inifile](inifiles/GLMMHD_RK2_20251016.ini) / [output](RecomputedPfinal/)|[65f6507ac2c52b1a04be66907454f22b1d7ddf07](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/65f6507ac2c52b1a04be66907454f22b1d7ddf07)|
+|2025-10-16| HLLD&divCleaning+RK2|[inifile](inifiles/GLMMHD_RK2_ZeroB_20251017.ini) / [output](ZeroB/)|[65f6507ac2c52b1a04be66907454f22b1d7ddf07](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/65f6507ac2c52b1a04be66907454f22b1d7ddf07)|
 
 
 Nous voulons maintenant déterminer quelle pression doit-être prise au bord. Pour cette expérience nous continuons à utiliser pour référence le HLLD avec le GLM, pour contrôler la dovergence, et un intégrateur RK2.
