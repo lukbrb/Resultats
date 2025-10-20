@@ -39,7 +39,8 @@ Les différents schémas et solveurs semblent converger vers le même résultat 
 |2025-10-16| HLLD&divCleaning+RK2|[inifile](inifiles/GLMMHD_RK2_20251016.ini) / [output](HLLD_RK2/)|[b0267fd8b152086020756799d2a0ee20f61c9896](https://drf-gitlab.cea.fr/dyablo/dyablo/-/tree/b0267fd8b152086020756799d2a0ee20f61c9896)|
 |2025-10-16| HLLD&divCleaning+R2|[inifile](inifiles/GLMMHD_RK2_20251016.ini) / [output](EqualPressure/)   | [155c29b7d5a8bfdf4716613331d22e08f1d64bf5](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/155c29b7d5a8bfdf4716613331d22e08f1d64bf5)|
 |2025-10-16| HLLD&divCleaning+RK2|[inifile](inifiles/GLMMHD_RK2_20251016.ini) / [output](RecomputedPfinal/)|[65f6507ac2c52b1a04be66907454f22b1d7ddf07](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/65f6507ac2c52b1a04be66907454f22b1d7ddf07)|
-|2025-10-16| HLLD&divCleaning+RK2|[inifile](inifiles/GLMMHD_RK2_ZeroB_20251017.ini) / [output](ZeroB/)|[65f6507ac2c52b1a04be66907454f22b1d7ddf07](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/65f6507ac2c52b1a04be66907454f22b1d7ddf07)|
+|2025-10-17| HLLD&divCleaning+RK2|[inifile](inifiles/GLMMHD_RK2_ZeroB_20251017.ini) / [output](ZeroB/)|[65f6507ac2c52b1a04be66907454f22b1d7ddf07](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/65f6507ac2c52b1a04be66907454f22b1d7ddf07)|
+|2025-10-17| HLLD&divCleaning+RK2| [inifile](inifiles/GLMMHD_RK2_20251016.ini) / [output](RiemannPressure/) |[64a5d01edfefc5e240f269dec69eba9894087d9a](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/64a5d01edfefc5e240f269dec69eba9894087d9a)|
 
 
 Nous voulons maintenant déterminer quelle pression doit-être prise au bord. Pour cette expérience nous continuons à utiliser pour référence le HLLD avec le GLM, pour contrôler la dovergence, et un intégrateur RK2.
@@ -54,4 +55,8 @@ Là encore aucune différence notable. À noter que dans notre cas cette égalit
 
 4. Un essai intéressant serait de voir le comportement de la vitesse verticale $v$ au bord dans le cas où $B_0=0$. Je veux en effet m'assurer que c'est pas simplement la condition au bord reflective qui introduit des ondes dans le domaine. Néanmoins, sans champ magnétique il n'y aura pas de cisaillement, donc $v=0$ et l'on s'attend à ce que ce test donne en effet une vitesse nulle sur tout l'axe vertical $y$. Ce résultat est confirmé (voir [Fig. 2.3](imgs/002_pressure_comparison/002_pressure_comparison_reconstructed_pressure_zeroB.png)).
 
-5. La pression du gaz $p_{in}$ comme étant la pression en sortie d'un solveur de Riemann, et non la valeur reconstruite.
+5. La pression du gaz $p_{in}$ comme étant la pression en sortie d'un solveur de Riemann, et non la valeur reconstruite. Avec l'[implémentation faite pour ce test](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/64a5d01edfefc5e240f269dec69eba9894087d9a), les résultats sont tout à fait similaires. Faudrait-il ajouter la pression magnétique ?
+
+### 3. Grandeurs Physiques
+
+Idéalement nous voudrions nous mettre dans un régime similaire qui approximerait notre fluide comme incompressible. 
