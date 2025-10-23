@@ -21,3 +21,14 @@ Nous refaison ce test avec `fv2d` car on peut observer les ghosts cells. Notre b
 | 2025-10-22| FiveWaves+PCM+Euler| [inifile](PCM_Euler/pcm_euler.ini) / [output](PCM_Euler/)| [07ebad6ac88f2e576ed4eff62f52c2bbcf541a43](https://github.com/mdelorme/fv2d/commit/07ebad6ac88f2e576ed4eff62f52c2bbcf541a43)|
 
 On constate sur la [figure 1](imgs/001_scheme_comparison_Bx.png) que la composante $B_x$ est mal reconstruite à l'interface, notamment pour que $B_x$ s'annule il faudrait que sa valeur dans les cells soient symmétriquement opposées. On observe la même chose pour les vitesses. 
+Ce qui semble poser problème dans ce cas est la valeur mise dans les ghosts cells.
+
+### 2. Valeurs des *ghosts cells*
+
+
+|  Date     | Test           | Files|  Commit Hash|
+|-----------|----------------|------|-------------|
+| 2025-10-22| FiveWaves+PLM+RK2|[inifile](PLM_RK2_NOFLUX/pcm_rk2.ini) / [output](PLM_RK2_NOFLUX/) | [Difference from reference commit](PLM_RK2_NOFLUX/diff.md)|
+
+Expériences :
+1. Résultat sans utiliser la réécriture des flux au bord &rarr; permet de vérifier l'effet de la reconstruction, et le bon remplissage des ghosts cells
