@@ -59,4 +59,4 @@ Là encore aucune différence notable. À noter que dans notre cas cette égalit
 
 ### 3. Grandeurs Physiques
 
-Idéalement nous voudrions nous mettre dans un régime similaire qui approximerait notre fluide comme incompressible. 
+Idéalement nous voudrions nous mettre dans un régime qui approximerait notre fluide comme incompressible. 
