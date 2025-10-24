@@ -27,8 +27,10 @@ Le plan de test est le suivant :
 
 |  Date     | Test           | Files|  Commit Hash|
 |-----------|----------------|------|-------------|
-| 2025-10-16| HLLDGLM+RK2[^1]| [inifile](inifiles/restart_mhd_magnetoconvection.ini) / No output file yet   |  [2a3bb26b01a9d33f792eca2100a245eddc8832be](https://drf-gitlab.cea.fr/dyablo/dyablo/-/tree/2a3bb26b01a9d33f792eca2100a245eddc8832be) |
-| 2025-10-24| HLLDGLM+RK2+WBH|[inifile]()
+| 2025-10-16| HLLDGLM+RK2[^1]| [inifile](inifiles/restart_mhd_magnetoconvection.ini) / [output](magnetoconvection_base/) |  [2a3bb26b01a9d33f792eca2100a245eddc8832be](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/2a3bb26b01a9d33f792eca2100a245eddc8832be) |
+| 2025-10-24| HLLDGLM+RK2+WBH|[inifile](inifiles/restart_mhd_magnetoconvection.ini)| [43cac11b4ea51608faa46cf5045ca1844e85cdd7](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/43cac11b4ea51608faa46cf5045ca1844e85cdd7)|
 [^1]: Ici on utilise également le *Well Balanced au bord*, qui permet de s'assurer que l'équilibre hydrostatique est respecté au bord du domaine.
+
+L'idée pour le deuxième test du 2025-10-24 est de relancer un test de référence, mais avec une faible résolution horizontale afin d'avoir des runs plus rapides.
 
 Images and animation can be found [here](imgs/).
