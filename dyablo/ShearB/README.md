@@ -57,6 +57,18 @@ Là encore aucune différence notable. À noter que dans notre cas cette égalit
 
 5. La pression du gaz $p_{in}$ comme étant la pression en sortie d'un solveur de Riemann, et non la valeur reconstruite. Avec l'[implémentation faite pour ce test](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/64a5d01edfefc5e240f269dec69eba9894087d9a), les résultats sont tout à fait similaires. Faudrait-il ajouter la pression magnétique ?
 
-### 3. Grandeurs Physiques
+### 3. Équilibre au bord
+
+Lorsqu'il y a de la gravité, nous imposons l'équilibre hydrostatique au bord en réécrivant la pression du gaz à l'interface comme 
+$$p_{i\pm 1/2} = p_{i \mp 1/2} \pm \rho_ig$$
+
+En l'absence de gravité, a-t-on  $ p_{i + 1/2} = p_{i - 1/2}$ tel que $\nabla p = 0$ ? Ici on évalue en fait le gradient de pression non pas sur le centre des cellules mais à leur interface.
+
+|  Date     | Test           | Files|  Commit Hash|
+|-----------|----------------|------|-------------|
+|2025-10-27| HLLD&divCleaning+RK2|[inifile](HydrostaticEquilibrium/shearB.ini) / [output](HydrostaticEquilibrium/)|[747aabe5cf862ebf9aaefcfdd7ca12d8bcd254e1](https://drf-gitlab.cea.fr/dyablo/dyablo/-/tree/747aabe5cf862ebf9aaefcfdd7ca12d8bcd254e1)|
+|2025-10-27|HLLD&divCleaning+RK2|[inifile](MHStaticEquilibrium/shearB.ini) / [output](MHStaticEquilibrium/)| [Git Diff](MHStaticEquilibrium/MHStatic_diff.md)|
+
+### Grandeurs Physiques
 
 Idéalement nous voudrions nous mettre dans un régime qui approximerait notre fluide comme incompressible. 
