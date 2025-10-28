@@ -1,0 +1,505 @@
+##########################
+KOKKOS CONFIG             
+##########################
+Kokkos configuration
+  Kokkos Version: 4.7.1
+Compiler:
+  KOKKOS_COMPILER_GNU: 1230
+  KOKKOS_COMPILER_NVCC: 1210
+Architecture:
+  CPU architecture: none
+  Default Device: Cuda
+  GPU architecture: AMPERE80
+  platform: 64bit
+Atomics:
+Vectorization:
+  KOKKOS_ENABLE_PRAGMA_IVDEP: no
+  KOKKOS_ENABLE_PRAGMA_LOOPCOUNT: no
+  KOKKOS_ENABLE_PRAGMA_UNROLL: no
+  KOKKOS_ENABLE_PRAGMA_VECTOR: no
+Memory:
+Options:
+  KOKKOS_ENABLE_ASM: yes
+  KOKKOS_ENABLE_CXX17: yes
+  KOKKOS_ENABLE_CXX20: no
+  KOKKOS_ENABLE_CXX23: no
+  KOKKOS_ENABLE_CXX26: no
+  KOKKOS_ENABLE_DEBUG_BOUNDS_CHECK: no
+  KOKKOS_ENABLE_HWLOC: no
+  KOKKOS_ENABLE_LIBDL: yes
+Host Parallel Execution Space:
+  KOKKOS_ENABLE_OPENMP: yes
+
+OpenMP Runtime Configuration:
+Kokkos::OpenMP thread_pool_topology[ 1 x 32 x 1 ]
+Device Execution Space:
+  KOKKOS_ENABLE_CUDA: yes
+Cuda Options:
+  KOKKOS_ENABLE_CUDA_RELOCATABLE_DEVICE_CODE: no
+  KOKKOS_ENABLE_CUDA_UVM: no
+  KOKKOS_ENABLE_IMPL_CUDA_MALLOC_ASYNC: no
+
+Cuda Runtime Configuration:
+macro  KOKKOS_ENABLE_CUDA      : defined
+macro  CUDA_VERSION          = 12010 = version 12.1
+Kokkos::Cuda[ 0 ] NVIDIA A100-SXM4-80GB : Selected
+  Capability: 8.0
+  Total Global Memory: 79.14 GiB
+  Shared Memory per Block: 48 KiB
+  Can access system allocated memory: 0
+    via Address Translation Service: 0
+##########################
+I'm MPI task #0 (out of 1) pinned to GPU #0
+.ini  found   : ini                      print_config             'false'                   -> false
+AMRmesh initialized : 512 ( 0 ) 
+Reallocate : add fields 0 -> 9
+##########################
+Godunov updater    : GLMMHDUpdate_WholeSun_RK2
+IO Manager         : IOManager_hdf5
+Gravity solver     : none
+Initial conditions : `MHD_isothermal_triple` 
+Refine condition   : none
+Compute dt         : `Compute_dt_hydro` `Compute_dt_parabolic` 
+
+Viscosity solver : ParabolicUpdate_explicit
+Thermal conduction solver : ParabolicUpdate_explicit
+Source Terms : `SourceUpdate_Isothermal_Layer_Cooling` `SourceUpdate_GLM` 
+##########################
+Output: scalar_data : iter=0 aexp=1 time=0 
+scalar_data : iter=0 aexp=1 dt=0.000546813 time=0 
+Mesh - rank 0 octs : 512 (0)
+Reallocate : add fields 9 -> 14
+Reallocate : add fields 14 -> 17
+Reallocate : add fields 17 -> 18
+scalar_data : iter=100 aexp=1 dt=0.000508472 time=0.0501294 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=200 aexp=1 dt=0.000519991 time=0.10164 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=300 aexp=1 dt=0.000526168 time=0.153972 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=400 aexp=1 dt=0.000530392 time=0.206801 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=500 aexp=1 dt=0.000533568 time=0.259993 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=600 aexp=1 dt=0.000536237 time=0.313479 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=700 aexp=1 dt=0.000538632 time=0.367222 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=800 aexp=1 dt=0.000540847 time=0.421198 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=900 aexp=1 dt=0.000542939 time=0.475389 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=1000 aexp=1 dt=0.000544943 time=0.529786 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=1100 aexp=1 dt=0.000546813 time=0.584379 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=1200 aexp=1 dt=0.000546813 time=0.639061 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=1300 aexp=1 dt=0.000546812 time=0.693742 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=1400 aexp=1 dt=0.000546812 time=0.748423 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=1500 aexp=1 dt=0.000546811 time=0.803104 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=1600 aexp=1 dt=0.00054681 time=0.857785 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=1700 aexp=1 dt=0.00054681 time=0.912466 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=1800 aexp=1 dt=0.000546809 time=0.967147 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=1900 aexp=1 dt=0.000546808 time=1.02183 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=2000 aexp=1 dt=0.000546807 time=1.07651 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=2100 aexp=1 dt=0.000546807 time=1.13119 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=2200 aexp=1 dt=0.000546806 time=1.18587 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=2300 aexp=1 dt=0.000546805 time=1.24055 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=2400 aexp=1 dt=0.000546804 time=1.29523 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=2500 aexp=1 dt=0.000546804 time=1.34991 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=2600 aexp=1 dt=0.000546803 time=1.40459 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=2700 aexp=1 dt=0.000546802 time=1.45927 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=2800 aexp=1 dt=0.000546801 time=1.51395 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=2900 aexp=1 dt=0.000546801 time=1.56863 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=3000 aexp=1 dt=0.0005468 time=1.62331 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=3100 aexp=1 dt=0.000546799 time=1.67799 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=3200 aexp=1 dt=0.000546798 time=1.73267 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=3300 aexp=1 dt=0.000546798 time=1.78735 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=3400 aexp=1 dt=0.000546797 time=1.84203 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=3500 aexp=1 dt=0.000546796 time=1.89671 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=3600 aexp=1 dt=0.000546795 time=1.95139 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=3700 aexp=1 dt=0.000546795 time=2.00607 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=3800 aexp=1 dt=0.000546794 time=2.06075 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=3900 aexp=1 dt=0.000546793 time=2.11543 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=4000 aexp=1 dt=0.000546792 time=2.17011 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=4100 aexp=1 dt=0.000546791 time=2.22479 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=4200 aexp=1 dt=0.000546791 time=2.27947 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=4300 aexp=1 dt=0.00054679 time=2.33415 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=4400 aexp=1 dt=0.000546785 time=2.38882 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=4500 aexp=1 dt=0.000546777 time=2.4435 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=4600 aexp=1 dt=0.000546772 time=2.49818 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=4700 aexp=1 dt=0.00054677 time=2.55286 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=4800 aexp=1 dt=0.00054677 time=2.60753 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=4900 aexp=1 dt=0.000546769 time=2.66221 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=5000 aexp=1 dt=0.000546769 time=2.71689 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=5100 aexp=1 dt=0.000546769 time=2.77157 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=5200 aexp=1 dt=0.000546768 time=2.82624 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=5300 aexp=1 dt=0.000546768 time=2.88092 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=5400 aexp=1 dt=0.000546768 time=2.9356 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=5500 aexp=1 dt=0.000546767 time=2.99027 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=5600 aexp=1 dt=0.000546767 time=3.04495 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=5700 aexp=1 dt=0.000546767 time=3.09963 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=5800 aexp=1 dt=0.000546766 time=3.1543 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=5900 aexp=1 dt=0.000546766 time=3.20898 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=6000 aexp=1 dt=0.000546765 time=3.26366 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=6100 aexp=1 dt=0.000546765 time=3.31833 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=6200 aexp=1 dt=0.000546765 time=3.37301 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=6300 aexp=1 dt=0.000546764 time=3.42768 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=6400 aexp=1 dt=0.000546764 time=3.48236 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=6500 aexp=1 dt=0.000546764 time=3.53704 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=6600 aexp=1 dt=0.000546763 time=3.59171 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=6700 aexp=1 dt=0.000546763 time=3.64639 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=6800 aexp=1 dt=0.000546763 time=3.70107 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=6900 aexp=1 dt=0.000546762 time=3.75574 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=7000 aexp=1 dt=0.000546762 time=3.81042 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=7100 aexp=1 dt=0.000546762 time=3.8651 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=7200 aexp=1 dt=0.000546761 time=3.91977 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=7300 aexp=1 dt=0.000546761 time=3.97445 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=7400 aexp=1 dt=0.00054676 time=4.02912 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=7500 aexp=1 dt=0.00054676 time=4.0838 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=7600 aexp=1 dt=0.00054676 time=4.13848 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=7700 aexp=1 dt=0.000546759 time=4.19315 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=7800 aexp=1 dt=0.000546759 time=4.24783 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=7900 aexp=1 dt=0.000546758 time=4.3025 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=8000 aexp=1 dt=0.000546758 time=4.35718 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=8100 aexp=1 dt=0.000546758 time=4.41185 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=8200 aexp=1 dt=0.000546757 time=4.46653 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=8300 aexp=1 dt=0.000546757 time=4.52121 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=8400 aexp=1 dt=0.000546756 time=4.57588 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=8500 aexp=1 dt=0.000546756 time=4.63056 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=8600 aexp=1 dt=0.000546756 time=4.68523 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=8700 aexp=1 dt=0.000546755 time=4.73991 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=8800 aexp=1 dt=0.000546755 time=4.79458 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=8900 aexp=1 dt=0.000546754 time=4.84926 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=9000 aexp=1 dt=0.000546754 time=4.90394 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=9100 aexp=1 dt=0.000546753 time=4.95861 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=9200 aexp=1 dt=0.000546753 time=5.01329 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=9300 aexp=1 dt=0.000546752 time=5.06796 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=9400 aexp=1 dt=0.000546752 time=5.12264 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=9500 aexp=1 dt=0.000546752 time=5.17731 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=9600 aexp=1 dt=0.000546751 time=5.23199 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=9700 aexp=1 dt=0.000546751 time=5.28666 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=9800 aexp=1 dt=0.00054675 time=5.34134 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=9900 aexp=1 dt=0.00054675 time=5.39601 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=10000 aexp=1 dt=0.000546749 time=5.45069 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=10100 aexp=1 dt=0.000546749 time=5.50536 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=10200 aexp=1 dt=0.000546748 time=5.56004 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=10300 aexp=1 dt=0.000546748 time=5.61471 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=10400 aexp=1 dt=0.000546747 time=5.66939 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=10500 aexp=1 dt=0.000546747 time=5.72406 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=10600 aexp=1 dt=0.000546746 time=5.77874 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=10700 aexp=1 dt=0.000546746 time=5.83341 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=10800 aexp=1 dt=0.000546745 time=5.88808 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=10900 aexp=1 dt=0.000546745 time=5.94276 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=11000 aexp=1 dt=0.000546744 time=5.99743 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=11100 aexp=1 dt=0.000546744 time=6.05211 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=11200 aexp=1 dt=0.000546743 time=6.10678 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=11300 aexp=1 dt=0.000546743 time=6.16146 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=11400 aexp=1 dt=0.000546742 time=6.21613 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=11500 aexp=1 dt=0.000546742 time=6.2708 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=11600 aexp=1 dt=0.000546741 time=6.32548 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=11700 aexp=1 dt=0.000546741 time=6.38015 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=11800 aexp=1 dt=0.00054674 time=6.43483 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=11900 aexp=1 dt=0.00054674 time=6.4895 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=12000 aexp=1 dt=0.000546739 time=6.54417 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=12100 aexp=1 dt=0.000546738 time=6.59885 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=12200 aexp=1 dt=0.000546738 time=6.65352 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=12300 aexp=1 dt=0.000546737 time=6.7082 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=12400 aexp=1 dt=0.000546737 time=6.76287 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=12500 aexp=1 dt=0.000546736 time=6.81754 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=12600 aexp=1 dt=0.000546736 time=6.87222 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=12700 aexp=1 dt=0.000546735 time=6.92689 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=12800 aexp=1 dt=0.000546735 time=6.98156 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=12900 aexp=1 dt=0.000546734 time=7.03624 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=13000 aexp=1 dt=0.000546733 time=7.09091 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=13100 aexp=1 dt=0.000546733 time=7.14558 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=13200 aexp=1 dt=0.000546732 time=7.20026 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=13300 aexp=1 dt=0.000546732 time=7.25493 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=13400 aexp=1 dt=0.000546731 time=7.3096 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=13500 aexp=1 dt=0.000546731 time=7.36428 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=13600 aexp=1 dt=0.00054673 time=7.41895 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=13700 aexp=1 dt=0.000546729 time=7.47362 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=13800 aexp=1 dt=0.000546729 time=7.5283 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=13900 aexp=1 dt=0.000546728 time=7.58297 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=14000 aexp=1 dt=0.000546728 time=7.63764 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=14100 aexp=1 dt=0.000546727 time=7.69231 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=14200 aexp=1 dt=0.000546726 time=7.74699 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=14300 aexp=1 dt=0.000546726 time=7.80166 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=14400 aexp=1 dt=0.000546725 time=7.85633 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=14500 aexp=1 dt=0.000546724 time=7.911 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=14600 aexp=1 dt=0.000546724 time=7.96568 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=14700 aexp=1 dt=0.000546723 time=8.02035 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=14800 aexp=1 dt=0.000546723 time=8.07502 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=14900 aexp=1 dt=0.000546722 time=8.12969 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=15000 aexp=1 dt=0.000546721 time=8.18437 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=15100 aexp=1 dt=0.00054672 time=8.23904 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=15200 aexp=1 dt=0.000546719 time=8.29371 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=15300 aexp=1 dt=0.000546719 time=8.34838 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=15400 aexp=1 dt=0.000546719 time=8.40305 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=15500 aexp=1 dt=0.000546719 time=8.45773 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=15600 aexp=1 dt=0.00054672 time=8.5124 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=15700 aexp=1 dt=0.00054672 time=8.56707 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=15800 aexp=1 dt=0.00054672 time=8.62174 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=15900 aexp=1 dt=0.00054672 time=8.67641 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=16000 aexp=1 dt=0.00054672 time=8.73109 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=16100 aexp=1 dt=0.000546719 time=8.78576 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=16200 aexp=1 dt=0.000546718 time=8.84043 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=16300 aexp=1 dt=0.000546717 time=8.8951 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=16400 aexp=1 dt=0.000546715 time=8.94977 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=16500 aexp=1 dt=0.000546713 time=9.00444 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=16600 aexp=1 dt=0.000546712 time=9.05912 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=16700 aexp=1 dt=0.00054671 time=9.11379 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=16800 aexp=1 dt=0.000546708 time=9.16846 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=16900 aexp=1 dt=0.000546707 time=9.22313 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=17000 aexp=1 dt=0.000546706 time=9.2778 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=17100 aexp=1 dt=0.000546704 time=9.33247 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=17200 aexp=1 dt=0.000546703 time=9.38714 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=17300 aexp=1 dt=0.000546701 time=9.44181 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=17400 aexp=1 dt=0.000546699 time=9.49648 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=17500 aexp=1 dt=0.000546696 time=9.55115 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=17600 aexp=1 dt=0.000546693 time=9.60582 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=17700 aexp=1 dt=0.000546691 time=9.66049 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=17800 aexp=1 dt=0.000546689 time=9.71516 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=17900 aexp=1 dt=0.000546687 time=9.76983 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=18000 aexp=1 dt=0.000546686 time=9.8245 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=18100 aexp=1 dt=0.000546686 time=9.87916 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=18200 aexp=1 dt=0.000546685 time=9.93383 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=18300 aexp=1 dt=0.000546685 time=9.9885 
+Mesh - rank 0 octs : 512 (0)
+Output: scalar_data : iter=18322 aexp=1 dt=0.000546685 time=10.0005 
+scalar_data : iter=18400 aexp=1 dt=0.000546685 time=10.0432 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=18500 aexp=1 dt=0.000546686 time=10.0978 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=18600 aexp=1 dt=0.000546686 time=10.1525 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=18700 aexp=1 dt=0.000546687 time=10.2072 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=18800 aexp=1 dt=0.000546687 time=10.2618 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=18900 aexp=1 dt=0.000546688 time=10.3165 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=19000 aexp=1 dt=0.000546688 time=10.3712 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=19100 aexp=1 dt=0.000546688 time=10.4259 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=19200 aexp=1 dt=0.000546688 time=10.4805 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=19300 aexp=1 dt=0.000546688 time=10.5352 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=19400 aexp=1 dt=0.000546688 time=10.5899 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=19500 aexp=1 dt=0.000546687 time=10.6445 
+Mesh - rank 0 octs : 512 (0)
+scalar_data : iter=19600 aexp=1 dt=0.000546687 time=10.6992 
+Mesh - rank 0 octs : 512 (0)
+Negative pressure detected
+Negative pressure detected
+Negative pressure detected
+Negative pressure detected
+Negative pressure detected
+Negative pressure detected
+Negative pressure detected
+Negative density detected
+Negative pressure detected
+Negative density detected
+Negative pressure detected
+Negative density detected
+Negative pressure detected
+Negative density detected
+Negative pressure detected
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Dyablo expect failed at /local/home/lb281911/dyablo/core/src/compute_dt/Compute_dt_hydro.cpp:136
+Function : compute_dt_aux
+Condition : `dt>0`
+Message : invalid dt = 0
+[feynmanvisu01:956969] *** Process received signal ***
+[feynmanvisu01:956969] Signal: Aborted (6)
+[feynmanvisu01:956969] Signal code:  (-6)
+[feynmanvisu01:956969] [ 0] /lib64/libpthread.so.0(+0x12cf0)[0x7ffff7705cf0]
+[feynmanvisu01:956969] [ 1] /lib64/libc.so.6(gsignal+0x10f)[0x7ffff301cacf]
+[feynmanvisu01:956969] [ 2] /lib64/libc.so.6(abort+0x127)[0x7ffff2fefea5]
+[feynmanvisu01:956969] [ 3] /local/home/adurocher/spack/opt/spack/linux-rocky8-zen/gcc-8.5.0/gcc-12.3.0-ihtvmsfjtuxwxioxgddk2y2n6o3h2om6/lib64/libstdc++.so.6(+0xa9f42)[0x7ffff39ddf42]
+[feynmanvisu01:956969] [ 4] /local/home/adurocher/spack/opt/spack/linux-rocky8-zen/gcc-8.5.0/gcc-12.3.0-ihtvmsfjtuxwxioxgddk2y2n6o3h2om6/lib64/libstdc++.so.6(+0xb610a)[0x7ffff39ea10a]
+[feynmanvisu01:956969] [ 5] /local/home/adurocher/spack/opt/spack/linux-rocky8-zen/gcc-8.5.0/gcc-12.3.0-ihtvmsfjtuxwxioxgddk2y2n6o3h2om6/lib64/libstdc++.so.6(+0xb6175)[0x7ffff39ea175]
+[feynmanvisu01:956969] [ 6] /local/home/adurocher/spack/opt/spack/linux-rocky8-zen/gcc-8.5.0/gcc-12.3.0-ihtvmsfjtuxwxioxgddk2y2n6o3h2om6/lib64/libstdc++.so.6(+0xb63d7)[0x7ffff39ea3d7]
+[feynmanvisu01:956969] [ 7] /local/home/lb281911/dyablo/build_gpu/dyablo/bin/dyablo[0x6bcceb]
+[feynmanvisu01:956969] [ 8] /local/home/lb281911/dyablo/build_gpu/dyablo/bin/dyablo[0x6bf6a8]
+[feynmanvisu01:956969] [ 9] /local/home/lb281911/dyablo/build_gpu/dyablo/bin/dyablo[0x4ba920]
+[feynmanvisu01:956969] [10] /local/home/lb281911/dyablo/build_gpu/dyablo/bin/dyablo[0x4bd418]
+[feynmanvisu01:956969] [11] /local/home/lb281911/dyablo/build_gpu/dyablo/bin/dyablo[0x439fa2]
+[feynmanvisu01:956969] [12] /lib64/libc.so.6(__libc_start_main+0xe5)[0x7ffff3008d85]
+[feynmanvisu01:956969] [13] /local/home/lb281911/dyablo/build_gpu/dyablo/bin/dyablo[0x47344e]
+[feynmanvisu01:956969] *** End of error message ***
+/var/spool/slurm/d/job6639734/slurm_script: line 22: 956969 Aborted                 (core dumped) /local/home/lb281911/dyablo/build_gpu/dyablo/bin/dyablo $1
