@@ -23,7 +23,7 @@ Auparavant l'équilibre hydrostatique était maintenu au bord en utilisant la pr
 
 Les résultats montrent que la nouvelle méthode ne garde hélas pas bien l'équilibre hydrostatique (voir [Fig. 1](imgs/002_well_balancing_comparison/01_new_old_WB.png)). On voit que la densité ne maintient pas son profil, notamment sur le haut du domaine. Par ailleurs, le deuxième essai, avec la nouvelle méthode de WB et un champ magnétique initial, montre un résultat similaire (voir [Fig. 2](imgs/002_well_balancing_comparison/02_new_old_and_mhd.png)).
 
-[!WARNING]
-> Il est important de garder à l'esprit que les runs 2 et 3 sont fait avec le solveur HLLD, tandis que le premier est avec le HLLC.
-> Bien que lorsque $B_0=0$ on s'attende à retrouver le même résultat, on ne peut ici assurer que l'erreur vient uniquement du nouveau WB
+> [!WARNING]
+> Il est important de garder à l'esprit que les runs 2 et 3 sont faits avec le solveur HLLD, tandis que le premier est avec le HLLC.
+> Bien que lorsque $B_0=0$ on s'attende à retrouver le même résultat, on ne peut ici assurer que l'erreur vient uniquement du nouveau WB.
 > Il faut faire un run avec le HLLD et l'ancien WB, à $B_0=0$ pour être en mesure de comparer les résultats
