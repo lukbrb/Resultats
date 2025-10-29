@@ -5,7 +5,8 @@ Ensemble des expériences faites avec les codes DYABLO et fv2d pour valider des 
 ## Contents
 
 - [1. Cisaillement Magnétique](dyablo/ShearB/)
-- [2. Magnéto-convection](dyablo/magnetoconvection/)
+- [2. Convection](dyablo/convection/)
+- [3. Magnéto-convection](dyablo/magnetoconvection/)
  
 ## Prototypage
 

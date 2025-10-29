@@ -11,8 +11,10 @@ Premiers tests effectués avec Dyablo
 Le plan de test est le suivant : 
 
 1. On teste dans un premier temps un équilibre hydrostatique avec une reconstruction ad-hoc de la pression opposée, simpliste : `p_opp = p_ref + dx/2 * slope`. Tester avec une frite de magnétoconvection, en mettant dans les deux cas les perturbations à 0.  
-    - [ ] Avant le changement
-    - [ ] Après le changement
+    - [X] Avant le changement
+    - [X] Après le changement
+
+    Ces runs ont été enregistrés dans la [section convection](../convection#2-equilibre-hydrostatique-au-bord)
 
 2. Modifier la condition au bord
     - [ ] Passer à la policy la valeur de p_opp et l’utiliser à la place du calcul ad-hoc
