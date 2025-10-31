@@ -1,0 +1,2 @@
+Rank ; Total ; Total/Init ; Total/Init/initial_conditions ; Total/TimeLoop ; Total/TimeLoop/GLM Parabolic Cleaning ; Total/TimeLoop/HyperbolicUpdate_RK2 ; Total/TimeLoop/MPI ghosts ; Total/TimeLoop/checkpoint ; Total/TimeLoop/dt ; Total/TimeLoop/outputs ; Total/TimeLoop/outputs/DerivedFields ; Total/checkpoint ; Total/outputs ; Total/outputs/DerivedFields
+0 ; 0.907128 ; 0.00331497 ; 0.00182295 ; 0.898567 ; 0.00225115 ; 0.805046 ; 0.000612736 ; 5.72205e-06 ; 0.00584936 ; 0.0123534 ; 0.00117278 ; 9.53674e-07 ; 0.00500917 ; 0.000645161

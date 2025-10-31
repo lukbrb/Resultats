@@ -68,6 +68,12 @@ En l'absence de gravité, a-t-on  $ p_{i + 1/2} = p_{i - 1/2}$ tel que $\nabla p
 |-----------|----------------|------|-------------|
 |2025-10-27| HLLD&divCleaning+RK2|[inifile](HydrostaticEquilibrium/shearB.ini) / [output](HydrostaticEquilibrium/)|[747aabe5cf862ebf9aaefcfdd7ca12d8bcd254e1](https://drf-gitlab.cea.fr/dyablo/dyablo/-/tree/747aabe5cf862ebf9aaefcfdd7ca12d8bcd254e1)|
 |2025-10-27|HLLD&divCleaning+RK2|[inifile](MHStaticEquilibrium/shearB.ini) / [output](MHStaticEquilibrium/)| [Git Diff](MHStaticEquilibrium/MHStatic_diff.md)|
+|2025-10-31|GLMMHD_WB_RK2|[inifile](inifiles/GLMMHD_WB_RK2_20251031.ini) / [output](TestWB/no_correction/)| [ae579a55158a20f9bbf7dd5d044424ef46f6b2b7](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/ae579a55158a20f9bbf7dd5d044424ef46f6b2b7)|
+|2025-10-31|GLMMHD_WB_RK2|[inifile](inifiles/GLMMHD_WB_RK2_20251031.ini) / [output](TestWB/first_magnetic_correction/)| [Git Diff](TestWB/first_magnetic_correction.diff)|
+
+**2025-10-31**
+1. Essai de référence avec champ magnétique et Well-Balancing originel purement hydro
+2. Essai avec correction magnétique ; on corrige le flux hydro comme originellement, mais en écrivant le flux magnétique comme normal &rarr; spécialisé pour un champ normal au bord
 
 ### Grandeurs Physiques
 

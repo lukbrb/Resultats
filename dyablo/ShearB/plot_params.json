@@ -1,0 +1,21 @@
+{
+    "wb_no_correction": {
+        "directory": "TestWB/no_correction/",
+        "snapshot": null,
+        "main_file": "test1_no_correction_main.xmf",
+        "plot_series": true,
+        "fields": ["rho", "rho_vx", "rho_vy", "rho_vz", "e_tot", "Bx", "By", "Bz", "psi"],
+        "NLabel_X": 3,
+        "NLabel_Y": 3
+    },
+
+    "wb_correction": {
+        "directory": "TestWB/first_magnetic_correction/",
+        "snapshot": null,
+        "main_file": "test1_correction_main.xmf",
+        "plot_series": true,
+        "fields": ["rho", "rho_vx", "rho_vy", "rho_vz", "e_tot", "Bx", "By", "Bz", "psi"],
+        "NLabel_X": 3,
+        "NLabel_Y": 3
+    }
+}

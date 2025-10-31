@@ -1,0 +1,539 @@
+diff --git a/core/src/CMakeLists.txt b/core/src/CMakeLists.txt
+index 39a36b4e..cded6aa7 100644
+--- a/core/src/CMakeLists.txt
++++ b/core/src/CMakeLists.txt
+@@ -9,13 +9,14 @@ set( core_src
+     ${CMAKE_CURRENT_SOURCE_DIR}/hyperbolic/HydroUpdate_euler_nopatch.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/hyperbolic/HydroUpdate_hancock.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/hyperbolic/HydroUpdate_RK2.cpp
+-    ${CMAKE_CURRENT_SOURCE_DIR}/hyperbolic/HydroUpdate_WholeSun_RK2
++    ${CMAKE_CURRENT_SOURCE_DIR}/hyperbolic/HydroUpdate_WholeSun_RK2.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/hyperbolic/GLMMHDUpdate_euler.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/hyperbolic/GLMMHDUpdate_hancock.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/hyperbolic/GLMMHDUpdate_RK2.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/hyperbolic/GLMMHDFiveWavesUpdate_RK2.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/hyperbolic/GLMMHDFiveWavesUpdate_euler.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/hyperbolic/GLMMHDFiveWavesUpdate_hancock.cpp
++    ${CMAKE_CURRENT_SOURCE_DIR}/hyperbolic/GLMMHDUpdate_WellBalanced_RK2.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/hyperbolic/RadUpdate_euler.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/gravity/GravitySolver_point_mass.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/gravity/GravitySolver_constant.cpp
+diff --git a/core/src/hyperbolic/GLMMHDUpdate_WellBalanced_RK2.cpp b/core/src/hyperbolic/GLMMHDUpdate_WellBalanced_RK2.cpp
+new file mode 100644
+index 00000000..c4735c53
+--- /dev/null
++++ b/core/src/hyperbolic/GLMMHDUpdate_WellBalanced_RK2.cpp
+@@ -0,0 +1,18 @@
++#include "hyperbolic/policy/HyperbolicPolicy_GLMMHD.h"
++
++#include "hyperbolic/scheme/Hyperbolic_WellBalanced_RK2.h"
++
++namespace dyablo{
++
++class GLMMHDUpdate_WellBalanced_RK2
++  : public Hyperbolic_WellBalanced_RK2<HyperbolicPolicy_GLMMHD>
++{
++public:
++  using Hyperbolic_WellBalanced_RK2<HyperbolicPolicy_GLMMHD>::Hyperbolic_WellBalanced_RK2;
++};
++
++} //namespace dyablo
++
++FACTORY_REGISTER( dyablo::HyperbolicUpdateFactory, 
++                  dyablo::GLMMHDUpdate_WellBalanced_RK2, 
++                  "GLMMHDUpdate_WellBalanced_RK2")
+diff --git a/core/src/hyperbolic/HyperbolicUpdate.h b/core/src/hyperbolic/HyperbolicUpdate.h
+index e2c21070..1a17cd51 100644
+--- a/core/src/hyperbolic/HyperbolicUpdate.h
++++ b/core/src/hyperbolic/HyperbolicUpdate.h
+@@ -22,6 +22,7 @@ class GLMMHDFiveWavesUpdate_hancock;
+ class RadUpdate_euler;
+ 
+ class HydroUpdate_WholeSun_RK2;
++class GLMMHDUpdate_WellBalanced_RK2;
+ 
+ } //namespace dyablo 
+ 
+@@ -43,6 +44,7 @@ inline bool dyablo::HyperbolicUpdateFactory::init()
+   DECLARE_REGISTERED(dyablo::GLMMHDFiveWavesUpdate_euler);
+   DECLARE_REGISTERED(dyablo::GLMMHDFiveWavesUpdate_RK2);
+   DECLARE_REGISTERED(dyablo::GLMMHDFiveWavesUpdate_hancock);
++  DECLARE_REGISTERED(dyablo::GLMMHDUpdate_WellBalanced_RK2);
+ 
+   return true;
+ }
+diff --git a/core/src/hyperbolic/scheme/Hyperbolic_WellBalanced_RK2.h b/core/src/hyperbolic/scheme/Hyperbolic_WellBalanced_RK2.h
+new file mode 100644
+index 00000000..57bceee5
+--- /dev/null
++++ b/core/src/hyperbolic/scheme/Hyperbolic_WellBalanced_RK2.h
+@@ -0,0 +1,469 @@
++#pragma once
++
++#include "HyperbolicUpdate_base.h"
++#include "mpi/GhostCommunicator_partial_blocks.h"
++#include "foreach_cell/ForeachCell_utils.h"
++
++namespace dyablo {
++namespace{
++using CellIndex     = ForeachCell::CellIndex;
++using FieldAccessor = UserData::FieldAccessor;
++using offset_t      = typename CellIndex::offset_t;
++using PatchArray = ForeachCell::CellArray_patch;
++
++}// namespace
++
++/**
++ * @brief Strong Stability Preserving RK2 algorithm
++ * 
++ * @tparam The type of policy to apply
++ */
++template<typename Policy>
++class Hyperbolic_WellBalanced_RK2 : public HyperbolicUpdate {
++  static_assert( is_HyperbolicPolicy_v<Policy>,
++  "Policy must be wrapped in HyperbolicPolicy_base");
++
++public:
++  using PrimState = typename Policy::PrimState;
++  using ConsState = typename Policy::ConsState;
++
++public:
++Hyperbolic_WellBalanced_RK2(
++          ConfigMap& configMap,
++          ForeachCell& foreach_cell,
++          Timers& timers) 
++  : foreach_cell(foreach_cell),
++    timers(timers),
++    policy_params(Policy::getParams(configMap)),
++    ndim(configMap.getValue<int>("mesh", "ndim", 3)),
++    smallr( configMap.getValue<real_t>("hydro","smallr", 1e-10) ),
++    smallp( configMap.getValue<real_t>("hydro","smallp", 1e-10) ),
++    smallc( configMap.getValue<real_t>("hydro","smallc", 1e-10) ),
++    gamma0( configMap.getValue<real_t>("hydro","gamma0", 1.6666667) ),
++    well_balanced_at_boundary( configMap.getValue<bool>("hydro", "well_balanced_at_boundary", false)),
++    gravity_enabled( configMap.getValue<GravityType>("gravity", "gravity_type", GRAVITY_NONE) == GRAVITY_CST_SCALAR),
++    gval( ndim == 2 ? configMap.getValue<real_t>("gravity", "gy", 0.0) : configMap.getValue<real_t>("gravity", "gz", 0.0))
++  { }
++
++  /**
++   * @brief Solves hydro using the SSP-RK2 scheme
++   * 
++   * @param U the input/output global array
++   * @param scalar_data input scalar data
++   */
++  void update( UserData& U, ScalarSimulationData& scalar_data ) 
++  {
++    real_t dt = scalar_data.get<real_t>("dt");
++
++    const Policy policy( this->policy_params, scalar_data );
++
++    timers.get("HyperbolicUpdate_RK2").start();
++    FieldAccessor Uin = policy.getUin(U);
++    FieldAccessor Uout = policy.getUout(U);
++ 
++    auto fm_cons = Policy::ConsState::getFieldManager();
++    auto Ustar = foreach_cell.allocate_ghosted_array("U*", fm_cons);
++
++    // Performing two steps
++    real_t old_t = scalar_data.get<real_t>("time");
++    update_once(Uin, Ustar, dt, true, scalar_data);
++    scalar_data.set("time", old_t+dt);
++    update_once(Ustar, Uout, dt, false, scalar_data);
++
++    // Reversing time to initial value
++    scalar_data.set("time", old_t);
++
++    // And correcting
++    foreach_cell.foreach_cell( "Hyperbolic_RK2::resetting_ghosts",
++      Uout.getShape(),
++      CELL_LAMBDA(const CellIndex &iCell) 
++    {
++      auto u0 = policy.getConsState(Uin,  iCell);
++      auto u1 = policy.getConsState(Uout, iCell);
++      
++      auto uout = 0.5*(u0+u1);
++      if constexpr ( Policy::has_postProcess() )
++      {
++        uout = policy.postProcess( uout );
++      }
++
++      policy.setConsState(Uout, iCell, uout);
++    });
++
++    policy.printWarnings();
++
++    timers.get("HyperbolicUpdate_RK2").stop();
++
++  }
++  /**
++   * @brief Solves hydro for one step using the RK2 method
++   * 
++   * @param Uin the input array
++   * @param Uout the output array
++   * @param dt the time step
++   * @param sync_Uout should Uout be resync via MPI at the end of the step
++   */
++  template < typename ArrayIn_t,
++             typename ArrayOut_t >
++  void update_once( ArrayIn_t& Uin, ArrayOut_t& Uout, real_t dt, bool sync_Uout, const ScalarSimulationData& scalar_data )
++  {
++    int ndim = this->ndim;
++
++    const Policy policy( this->policy_params, scalar_data ); 
++    ForeachCell& foreach_cell = this->foreach_cell;
++
++    ForeachCell::CellMetaData cellmetadata = foreach_cell.getCellMetaData();
++
++    const real_t gamma0 = this->gamma0;
++    const real_t smallp = this->smallp;
++    const real_t smallc = this->smallc;
++    const real_t smallr = this->smallr;
++    const real_t gval   = this->gval;
++  // policy_params is of type Policy::Params which contains an inner member
++  // named policy_params (the actual policy parameter struct). The c_h
++  // value is stored there. We divide by dt here to get c_h/dt as required
++  // by GLM kernels.
++    const real_t c_h    = policy_params.policy_params.c_h / dt;
++    
++    const bool gravity_enabled           = this->gravity_enabled;
++    const bool well_balanced_at_boundary = this->well_balanced_at_boundary;
++
++    // Initializing output array 
++    // TODO : remove this and copy Uin->Uout in timeloop or field creation logic
++    foreach_cell.foreach_cell( "Hyperbolic_RK2::init",
++      Uout.getShape(),
++      CELL_LAMBDA(const CellIndex &iCell) 
++    {
++      ConsState uC = policy.getConsState(Uin, iCell);
++      policy.setConsState(Uout, iCell, uC);
++    });
++
++    // Setting the ghosts to 0 to accumulate fluxes
++    foreach_cell.foreach_ghost_cell( "Hyperbolic_RK2::resetting_ghosts",
++      Uout.getShape(),
++      CELL_LAMBDA(const CellIndex &iCell) 
++    {
++      ConsState empty_state{};
++      policy.setConsState(Uout, iCell, empty_state);
++    });
++
++    auto fm_prim = PrimState::getFieldManager().get_id2index();
++    PatchArray::Ref Qpatch_ = foreach_cell.reserve_patch_tmp("Qpatch", 2, 2, (ndim == 3)?2:0, fm_prim, State_traits<PrimState>::nvars);
++
++    foreach_cell.foreach_patch( "Hyperbolic_RK2::update", 
++      PATCH_LAMBDA( const ForeachCell::Patch& patch )
++    {
++      PatchArray Qpatch = patch.allocate_tmp(Qpatch_);
++
++      patch.foreach_cell( Qpatch, 
++        CELL_LAMBDA( const CellIndex& iCell_Qpatch )
++      {
++        CellIndex iCell_Uin = Uin.getShape().convert_index_ghost(iCell_Qpatch);
++        int level_diff = iCell_Uin.level_diff();
++        ConsState u = {};
++        if (iCell_Uin.is_boundary())
++          u = policy.getBoundaryValue(Uin, iCell_Uin, cellmetadata);
++        else if (level_diff < 0) {
++          int subcell_count = 
++          foreach_sibling(ndim, iCell_Uin, Uin.getShape(),
++            [&](const CellIndex& iCell_neigh) {
++              ConsState uloc = policy.getConsState(Uin, iCell_neigh);
++              u += uloc;
++            });
++          u /= subcell_count;
++        }
++        else
++          u = policy.getConsState(Uin, iCell_Uin);
++        
++        const PrimState q = policy.consToPrim( u );
++        policy.setPrimState( Qpatch, iCell_Qpatch, q );
++      });
++
++      patch.foreach_cell( Uout.getShape(), 
++        CELL_LAMBDA( const CellIndex& iCell_Uout )
++      {
++        // Return Slope at position iCell
++        auto get_slope = [&](const CellIndex &iCell_Uin, const CellIndex &iCell_Qpatch, ComponentIndex3D dir) 
++        {        
++          const PrimState qC = policy.getPrimState(Qpatch, iCell_Qpatch );
++          offset_t off_m{}; off_m[dir] = -1;
++          const PrimState qL = policy.getPrimState(Qpatch, iCell_Qpatch + off_m); 
++          offset_t off_p{}; off_p[dir] =  1;
++          const PrimState qR = policy.getPrimState(Qpatch, iCell_Qpatch + off_p); 
++        
++          //!\ Neighbor cells in Qpatch are averaged cells -> size iCell_L != size iCell_Qpatch_L
++          CellIndex iCell_L = iCell_Uin.getNeighbor_ghost(off_m, Uout.getShape());
++          CellIndex iCell_R = iCell_Uin.getNeighbor_ghost(off_p, Uout.getShape());   
++
++          // Getting the length right and left
++          // Smaller -> use averaged same-size cell -> 1*dx
++          // Bigger -> same-size cell in Qpatch has vame value as actual bigger cell -> dx/2 + dx             
++          constexpr real_t sizes[] = {1.0, 1.0, 1.5}; 
++          const real_t dL = sizes[iCell_L.level_diff()+1];
++          const real_t dR = sizes[iCell_R.level_diff()+1];  
++
++          // Computing minmod slope for the direction
++          PrimState slope = policy.compute_slope( qL, qC, qR, dL, dR);
++          return slope;
++        }; // get_slope
++
++
++        auto process_dir = [&](const CellIndex &iCell_Uin, const CellIndex &iCell_Qpatch, ComponentIndex3D dir) {
++          // Getting centered value and slope
++          PrimState qC0 = policy.getPrimState( Qpatch, iCell_Qpatch );
++          PrimState slope_C = get_slope(iCell_Uin, iCell_Qpatch, dir);
++          real_t size_C = cellmetadata.getCellSize(iCell_Uin)[dir];
++
++          real_t dim_fac = (ndim == 2 ? 0.5 : 0.25);
++
++          auto get_pressure = [&](const PrimState &qleft, const PrimState &qright) {
++        
++            // Left variables
++            real_t rl = fmax(qleft.rho, smallr);
++            real_t pl = fmax(qleft.p, rl*smallp);
++            real_t ul = (dir == IX ? qleft.u : dir == IY ? qleft.v : qleft.w);
++        
++            real_t ptotl = pl;
++        
++        
++            // Right variables
++            real_t rr = fmax(qright.rho, smallr);
++            real_t pr = fmax(qright.p, rr*smallp);
++            real_t ur = (dir == IX ? qright.u : dir == IY ? qright.v : qright.w);
++        
++            real_t ptotr = pr;
++            
++            // Find the largest eigenvalues in the normal direction to the interface
++            real_t cfastl = SQRT(fmax(gamma0*pl/rl,smallc*smallc));
++            real_t cfastr = SQRT(fmax(gamma0*pr/rr,smallc*smallc));
++        
++            // Compute HLL wave speed
++            real_t SL = fmin(ul,ur) - fmax(cfastl,cfastr);
++            real_t SR = fmax(ul,ur) + fmax(cfastl,cfastr);
++        
++            // Compute lagrangian sound speed
++            real_t rcl = rl*(ul-SL);
++            real_t rcr = rr*(SR-ur);
++            
++            // Compute acoustic star state
++            real_t ustar    = (rcr*ur   +rcl*ul   +  (ptotl-ptotr))/(rcr+rcl);
++            real_t ptotstar = (rcr*ptotl+rcl*ptotr+rcl*rcr*(ul-ur))/(rcr+rcl);
++        
++            real_t ptoto;
++            if (SL > 0)
++              ptoto=ptotl;
++            else if (ustar > 0)
++              ptoto=ptotstar;
++            else if (SR > 0)
++              ptoto=ptotstar;
++            else
++              ptoto=ptotr;
++            return ptoto;
++          };
++          real_t pL=0.0, pR=0.0;
++  
++          // Compute left side flux
++          bool left_boundary = false;
++          ConsState fluxL {};
++          {                
++            PrimState qC = qC0 - 0.5 * slope_C;
++
++            offset_t off_m{}; 
++            off_m[dir] = -1;
++            const CellIndex iCell_Uin_m = iCell_Uin.getNeighbor_ghost(off_m, Uin.getShape());
++            if( iCell_Uin_m.is_boundary() )
++            {
++              fluxL = policy.getBoundaryFlux(Uin, iCell_Uin_m, qC, cellmetadata);
++              left_boundary = true;
++            }
++            else
++            {  
++              int Ldiff = iCell_Uin_m.level_diff();
++              if (Ldiff >= 0) 
++              {
++                CellIndex iCell_Qpatch_m = iCell_Qpatch + off_m;
++                PrimState qL0 = policy.getPrimState( Qpatch, iCell_Qpatch_m );
++                PrimState slope_L = get_slope(iCell_Uin_m, iCell_Qpatch_m, dir);
++                real_t size_L = cellmetadata.getCellSize(iCell_Uin_m)[dir];
++
++                // Reconstructing
++                PrimState qL = qL0 + 0.5 * slope_L;
++
++                // Solving
++                fluxL = policy.riemann_solver(qL, qC, dir);
++                pL    = get_pressure(qL, qC);
++                
++                // Adding flux to the neighbor if it is bigger
++                if (Ldiff == 1) 
++                {
++                  ConsState du_n = fluxL * - dim_fac * dt / size_L;
++                  policy.atomic_addConsState(Uout, iCell_Uin_m, du_n);
++                }
++              } // If smaller we skip
++            }
++          }
++
++          // Compute right side flux
++          bool right_boundary = false;
++          ConsState fluxR {};
++          { 
++            PrimState qC = qC0 + 0.5 * slope_C;    
++            offset_t off_p{}; 
++            off_p[dir] = 1;
++            const CellIndex iCell_Uin_p = iCell_Uin.getNeighbor_ghost(off_p, Uin.getShape());
++            if( iCell_Uin_p.is_boundary() )
++            {
++              fluxR = policy.getBoundaryFlux(Uin, iCell_Uin_p, qC, cellmetadata);
++              right_boundary = true;
++            }
++            else
++            {
++              int Rdiff = iCell_Uin_p.level_diff();
++              if (Rdiff >= 0) 
++              {
++                CellIndex iCell_Qpatch_p = iCell_Qpatch + off_p;
++                PrimState qR0 = policy.getPrimState( Qpatch, iCell_Qpatch_p );
++                PrimState slope_R = get_slope(iCell_Uin_p, iCell_Qpatch_p, dir);
++                real_t size_R = cellmetadata.getCellSize(iCell_Uin_p)[dir];
++
++                // Reconstructing
++                PrimState qR = qR0 - 0.5 * slope_R;
++
++                // Solving
++                fluxR = policy.riemann_solver(qC, qR, dir);
++                pR    = get_pressure(qC, qR);
++
++                // Adding flux to the neighbor if it is bigger
++                if (Rdiff == 1)
++                {
++                  ConsState du_n = fluxR * dim_fac * dt / size_R;
++                  policy.atomic_addConsState(Uout, iCell_Uin_p, du_n);
++                }          
++              }
++            }
++          } 
++
++          if (dir == ndim-1 && well_balanced_at_boundary) {
++              if (left_boundary) {
++                PrimState qL = qC0 - 0.5 * slope_C;
++                ConsState fluxL_hydro{}, fluxL_mhd{}, fluxL_glm{};
++                fluxL = ConsState{};
++                real_t Bx, By, Bz, pmag;
++              if (dir == IY){
++                Bx = 0.0; By = qL.By; Bz = 0.0;
++                pmag = 0.5 * By * By;
++                fluxL_hydro.rho_v = pR - qC0.rho*gval*size_C;
++                // Modification of the hydro flux
++                fluxL_mhd.rho_v    = -By * By + pmag;
++                fluxL_mhd.Bx       = -By*qL.u;
++                fluxL_mhd.Bz       = -By*qL.w;
++                // GLM correction
++                fluxL_glm.By      = qL.psi;
++                fluxL_glm.psi     = c_h*c_h * By;
++              }
++            //   else if (dir == IZ){
++            //       Bx = 0.0; By = 0.0; Bz = qL.Bz;
++            //       pmag = 0.5 * Bz * Bz;
++            //       fluxL_hydro.rho_w = pR - qC0.rho*gval*size_C;
++            //       // Modification of the hydro flux
++            //       fluxL_mhd.rho_w   = -Bz * Bz + pmag;
++            //       fluxL_mhd.Bx      = -Bz*qL.u;
++            //       fluxL_mhd.By      = -Bz*qL.v;
++            //       // GLM correction
++            //       fluxL_glm.Bz      = qL.psi;
++            //       fluxL_glm.psi     = c_h*c_h * Bz;
++            //   }
++              fluxL = fluxL_hydro + fluxL_mhd + fluxL_glm;
++            }
++
++            else if (right_boundary) {
++                PrimState qR = qC0 + 0.5 * slope_C;
++                ConsState fluxR_hydro{}, fluxR_mhd{}, fluxR_glm{};
++                fluxR = ConsState{};
++                real_t Bx, By, Bz;
++                real_t pmag;
++              if (dir == IY){
++                Bx = 0.0; By = qR.By; Bz = 0.0;
++                pmag = 0.5 * By * By;
++                fluxR.rho_v = pL + qC0.rho*gval*size_C;
++                // Modification of the hydro flux
++                fluxR_mhd.rho_v   = -By * By + pmag;
++                fluxR_mhd.Bx      = -By*qR.u;
++                fluxR_mhd.Bz      = -By*qR.w;
++                // GLM correction
++                fluxR_glm.By      = qR.psi;
++                fluxR_glm.psi     = c_h*c_h * By;
++              }
++            //   else if (dir == IZ){
++            //     Bx = 0.0; By = 0.0; Bz = qR.Bz;
++            //     pmag = 0.5 * Bz * Bz;
++            //     fluxR_hydro.rho_w = pL + qC0.rho*gval*size_C;
++            //     // Modification of the hydro flux
++            //     fluxR_mhd.rho_w   = -Bz * Bz + pmag;
++            //     fluxR_mhd.Bx      = -Bz*qR.u;
++            //     fluxR_mhd.By      = -Bz*qR.w;
++            //     // GLM correction
++            //     fluxR_glm.Bz      = qR.psi;
++            //     fluxR_glm.psi     = c_h*c_h * Bz;
++            //   }
++                fluxR = fluxR_hydro + fluxR_mhd + fluxR_glm;
++            }
++          }
++
++          ConsState du = (fluxL-fluxR) * dt / size_C;
++          
++          if (gravity_enabled && (dir == ndim-1)) {
++            if (dir == IY) {
++              du.rho_v += dt * qC0.rho * gval;
++              du.e_tot += dt * 0.5 * (fluxL.rho + fluxR.rho) * gval;
++            }
++            else {
++              du.rho_w += dt * qC0.rho * gval;
++              du.e_tot += dt * 0.5 * (fluxL.rho + fluxR.rho) * gval;
++            }
++          }
++          return du;
++        };
++
++
++
++        CellIndex iCell_Qpatch = Qpatch.getShape().convert_index(iCell_Uout);
++
++        ConsState du{};
++        du += process_dir(iCell_Uout, iCell_Qpatch, IX);
++        du += process_dir(iCell_Uout, iCell_Qpatch, IY);
++        if (ndim == 3)
++          du += process_dir(iCell_Uout, iCell_Qpatch, IZ);
++
++        policy.atomic_addConsState(Uout, iCell_Uout, du);
++      });
++    });
++      
++      
++    // Reducing the ghosts to accumulate the flux in the data arrays 
++    int ghost_count = 2;
++    GhostCommunicator_partial_blocks ghost_comm ( 
++      foreach_cell.get_amr_mesh(),
++      Uout.getShape(),
++      ghost_count );
++    ghost_comm.reduce_ghosts( Uout );
++
++    if (sync_Uout)
++      ghost_comm.exchange_ghosts( Uout );
++  }
++
++private:
++  ForeachCell& foreach_cell;
++  
++  Timers& timers;  
++  typename Policy::Params policy_params;
++
++  int ndim;
++  real_t smallr, smallp, smallc, gamma0;
++  bool well_balanced_at_boundary;
++  bool gravity_enabled;
++  real_t gval;
++};
++
++} // namespace dyablo
++
