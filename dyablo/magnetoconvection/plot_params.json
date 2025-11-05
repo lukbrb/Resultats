@@ -1,0 +1,21 @@
+{
+    "wb_no_correction": {
+        "directory": "20251104_WB_hydro_with_mag/",
+        "snapshot": null,
+        "main_file": "WB_Hydro_and_Magneto_main.xmf",
+        "plot_series": true,
+        "fields": ["rho", "rho_vx", "rho_vy", "rho_vz", "e_tot", "Bx", "By", "Bz", "psi"],
+        "NLabel_X": 3,
+        "NLabel_Y": 3
+    },
+
+    "wb_correction": {
+        "directory": "TestWB/first_magnetic_correction/",
+        "snapshot": null,
+        "main_file": "test1_correction_main.xmf",
+        "plot_series": true,
+        "fields": ["rho", "rho_vx", "rho_vy", "rho_vz", "e_tot", "Bx", "By", "Bz", "psi"],
+        "NLabel_X": 3,
+        "NLabel_Y": 3
+    }
+}

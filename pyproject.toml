@@ -1,0 +1,31 @@
+[project]
+name = "resultats"
+version = "0.1.0"
+description = "Ensemble des résultats de simulations faites avec les codes Dyablo et fv2d."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "matplotlib>=3.10.7",
+    "pyablo",
+]
+authors = [
+  { name = "Lucas Barbier-Goy", email = "" },
+]
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
+
+[tool.uv.sources]
+pyablo = { git = "https://github.com/Dyablo-HPC/Pyablo", rev = "lbarbier/packaging" }
+
+[dependency-groups]
+dev = [
+    "matplotlib-stubs>=0.3.11",
+]
