@@ -32,7 +32,7 @@ class PlotParams:
             NLabel_Y=params.get('NLabel_Y', 1)
         )
 
-params = PlotParams.load_json("wb_no_correction")
+params = PlotParams.load_json("wb_correction")
 
 r = pyablo.XdmfReader()
 filename = params.snapshot if params.snapshot else params.main_file
