@@ -31,10 +31,12 @@ Le plan de test est le suivant :
 |-----------|----------------|------|-------------|
 | 2025-10-16| HLLDGLM+RK2[^1]| [inifile](inifiles/restart_mhd_magnetoconvection.ini) / [output](magnetoconvection_base/) |  [2a3bb26b01a9d33f792eca2100a245eddc8832be](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/2a3bb26b01a9d33f792eca2100a245eddc8832be) |
 | 2025-10-24| HLLDGLM+RK2+WBH|[inifile](inifiles/restart_mhd_magnetoconvection.ini)| [43cac11b4ea51608faa46cf5045ca1844e85cdd7](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/43cac11b4ea51608faa46cf5045ca1844e85cdd7)|
-|2025-11-04|HLLDGLM+RK2+WBH|[inifile](20251104_WB_hydro_with_mag/restart_WB_Hydro_and_Magneto_1006685.ini) / [output](20251104_WB_hydro_with_mag/)|[4cf43368f90d221836976987b39a9d4a8564be59](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/4cf43368f90d221836976987b39a9d4a8564be59)|
+| 2025-11-04|HLLDGLM+RK2+WBH|[inifile](20251104_WB_hydro_with_mag/restart_WB_Hydro_and_Magneto_1006685.ini) / [output](20251104_WB_hydro_with_mag/)|[4cf43368f90d221836976987b39a9d4a8564be59](https://drf-gitlab.cea.fr/dyablo/dyablo/-/commit/4cf43368f90d221836976987b39a9d4a8564be59)|
 
 [^1]: Ici on utilise également le *Well Balanced au bord*, qui permet de s'assurer que l'équilibre hydrostatique est respecté au bord du domaine.
 
+Le premier test du 2025-10-16 sert de référence. Il a été constaté plus tard que le *well-balancing* au bord réécrivait en fait le flux hydro uniquement, ne prenant pas en compte les contributions magnétiques au flux. 
 L'idée pour le deuxième test du 2025-10-24 est de relancer un test de référence, mais avec une faible résolution horizontale afin d'avoir des runs plus rapides.
+Le test du 2025-11-04 tente de montrer si l'ajout des contributions magnétiques au flux permettent de garder l'équilibre hydrostatique ainsi qu'un champ normal au bord. On constate sur les [tracés de la densité](imgs/005_hydro_well_balancing_corrected/) qu'hélas cet équilibre ne semble pas maintenu.
 
-Images and animation can be found [here](imgs/).
+All images and animation can be found [here](imgs/)
