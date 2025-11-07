@@ -6,6 +6,7 @@ import json
 
 from dataclasses import dataclass
 
+DATA_TO_PLOT = "wb_total_pressure_bugfix"
 @dataclass
 class PlotParams:
     directory: str
@@ -32,7 +33,7 @@ class PlotParams:
             NLabel_Y=params.get('NLabel_Y', 1)
         )
 
-params = PlotParams.load_json("wb_correction")
+params = PlotParams.load_json(DATA_TO_PLOT)
 
 r = pyablo.XdmfReader()
 filename = params.snapshot if params.snapshot else params.main_file

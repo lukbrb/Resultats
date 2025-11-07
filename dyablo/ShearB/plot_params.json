@@ -17,5 +17,44 @@
         "fields": ["rho", "rho_vx", "rho_vy", "rho_vz", "e_tot", "Bx", "By", "Bz", "psi"],
         "NLabel_X": 3,
         "NLabel_Y": 3
+    },
+
+    "wb_total_pressure_correction": {
+        "directory": "TestWB/total_pressure_magnetic_correction/",
+        "snapshot": null,
+        "main_file": "test2_correction_main.xmf",
+        "plot_series": true,
+        "fields": ["rho", "rho_vx", "rho_vy", "rho_vz", "e_tot", "Bx", "By", "Bz", "psi"],
+        "NLabel_X": 3,
+        "NLabel_Y": 3
+    },
+
+    "wb_total_pressure_bugfix": {
+        "directory": "TestWB/total_pressure_magnetic_correction_bugfix/",
+        "snapshot": null,
+        "main_file": "test2_correction_bugfix_main.xmf",
+        "plot_series": true,
+        "fields": ["rho", "rho_vx", "rho_vy", "e_tot", "Bx", "By"],
+        "NLabel_X": 3,
+        "NLabel_Y": 2
+    },
+
+    "wb_total_pressure_gradient": {
+        "directory": "TestWB/total_pressure_gradient/",
+        "snapshot": null,
+        "main_file": "test2_total_pressure_gradient_main.xmf",
+        "plot_series": true,
+        "fields": ["rho", "rho_vx", "rho_vy", "e_tot", "Bx", "By"],
+        "NLabel_X": 3,
+        "NLabel_Y": 2
+    },
+    "wb_total_pressure_gradient_bugfix": {
+        "directory": "TestWB/total_pressure_gradient_fixed/",
+        "snapshot": null,
+        "main_file": "test2_total_pressure_gradient_fixed_main.xmf",
+        "plot_series": true,
+        "fields": ["rho", "rho_vx", "rho_vy", "e_tot", "Bx", "By"],
+        "NLabel_X": 3,
+        "NLabel_Y": 2
     }
 }

@@ -1,0 +1,240 @@
+Reference commit: 4cf43368f90d221836976987b39a9d4a8564be59
+
+diff --git a/core/src/hyperbolic/scheme/Hyperbolic_WellBalanced_RK2.h b/core/src/hyperbolic/scheme/Hyperbolic_WellBalanced_RK2.h
+index aa895dfb..22591087 100644
+--- a/core/src/hyperbolic/scheme/Hyperbolic_WellBalanced_RK2.h
++++ b/core/src/hyperbolic/scheme/Hyperbolic_WellBalanced_RK2.h
+@@ -39,6 +39,7 @@ Hyperbolic_WellBalanced_RK2(
+     smallr( configMap.getValue<real_t>("hydro","smallr", 1e-10) ),
+     smallp( configMap.getValue<real_t>("hydro","smallp", 1e-10) ),
+     smallc( configMap.getValue<real_t>("hydro","smallc", 1e-10) ),
++    smalle( configMap.getValue<real_t>("hydro","smalle", 1e-5) ),
+     gamma0( configMap.getValue<real_t>("hydro","gamma0", 1.6666667) ),
+     well_balanced_at_boundary( configMap.getValue<bool>("hydro", "well_balanced_at_boundary", false)),
+     gravity_enabled( configMap.getValue<GravityType>("gravity", "gravity_type", GRAVITY_NONE) == GRAVITY_CST_SCALAR),
+@@ -116,7 +117,6 @@ Hyperbolic_WellBalanced_RK2(
+ 
+     const real_t gamma0 = this->gamma0;
+     const real_t smallp = this->smallp;
+-    const real_t smallc = this->smallc;
+     const real_t smallr = this->smallr;
+     const real_t gval   = this->gval;
+   // policy_params is of type Policy::Params which contains an inner member
+@@ -215,51 +215,105 @@ Hyperbolic_WellBalanced_RK2(
+           real_t size_C = cellmetadata.getCellSize(iCell_Uin)[dir];
+ 
+           real_t dim_fac = (ndim == 2 ? 0.5 : 0.25);
++          
++          auto swapComponents = [&] (const PrimState &q, ComponentIndex3D comp) {
++              switch( comp )
++              {
++                case IX:
++                  return q;
++                case IY:
++                  return PrimState{q.rho, q.p, q.v, q.u, q.w, q.By, q.Bx, q.Bz, q.psi};
++                case IZ:
++                  return PrimState{q.rho, q.p, q.w, q.v, q.u, q.Bz, q.By, q.Bx, q.psi};
++                default: return PrimState{};
++              }
++            };
++                    // CAUTION ! This lambda is assuming that the riemann_problem is solved along the x-axis
++          auto get_pressure = [&](const PrimState &ql, const PrimState &qr, ComponentIndex3D dir) {
+ 
+-          auto get_pressure = [&](const PrimState &qleft, const PrimState &qright) {
+-        
++                const PrimState qleft = swapComponents(ql, dir);
++                const PrimState qright = swapComponents(qr, dir);
+             // Left variables
+-            real_t rl = fmax(qleft.rho, smallr);
+-            real_t pl = fmax(qleft.p, rl*smallp);
+-            real_t ul = (dir == IX ? qleft.u : dir == IY ? qleft.v : qleft.w);
+-        
+-            real_t ptotl = pl;
+-        
+-        
+-            // Right variables
+-            real_t rr = fmax(qright.rho, smallr);
+-            real_t pr = fmax(qright.p, rr*smallp);
+-            real_t ur = (dir == IX ? qright.u : dir == IY ? qright.v : qright.w);
+-        
+-            real_t ptotr = pr;
+-            
+-            // Find the largest eigenvalues in the normal direction to the interface
+-            real_t cfastl = SQRT(fmax(gamma0*pl/rl,smallc*smallc));
+-            real_t cfastr = SQRT(fmax(gamma0*pr/rr,smallc*smallc));
+-        
+-            // Compute HLL wave speed
+-            real_t SL = fmin(ul,ur) - fmax(cfastl,cfastr);
+-            real_t SR = fmax(ul,ur) + fmax(cfastl,cfastr);
+-        
+-            // Compute lagrangian sound speed
+-            real_t rcl = rl*(ul-SL);
+-            real_t rcr = rr*(SR-ur);
+-            
+-            // Compute acoustic star state
+-            real_t ustar    = (rcr*ur   +rcl*ul   +  (ptotl-ptotr))/(rcr+rcl);
+-            real_t ptotstar = (rcr*ptotl+rcl*ptotr+rcl*rcr*(ul-ur))/(rcr+rcl);
+-        
+-            real_t ptoto;
+-            if (SL > 0)
+-              ptoto=ptotl;
+-            else if (ustar > 0)
+-              ptoto=ptotstar;
+-            else if (SR > 0)
+-              ptoto=ptotstar;
+-            else
+-              ptoto=ptotr;
+-            return ptoto;
++                const real_t Bx   = 0.5 * (qleft.Bx + qright.Bx) - 0.5/c_h * (qright.psi - qleft.psi);
++
++                // Left variables
++                real_t rl = fmax(qleft.rho, smallr);
++                real_t pl = fmax(qleft.p, rl*smallp);
++                real_t ul =      qleft.u;
++                real_t Byl =     qleft.By;
++                real_t Bzl =     qleft.Bz;
++                real_t B2l =     Bx*Bx+Byl*Byl+Bzl*Bzl;
++                real_t pTl =     pl + 0.5 * B2l;
++
++                // Right variables
++                real_t rr = fmax(qright.rho, smallr);
++                real_t pr = fmax(qright.p, rr*smallp);
++                real_t ur =      qright.u;
++                real_t Byr =     qright.By;
++                real_t Bzr =     qright.Bz;
++                real_t B2r =     Bx*Bx+Byr*Byr+Bzr*Bzr;
++                real_t pTr =     pr + 0.5 * B2r;
++
++                auto computeFastMagnetoAcousticSpeed = [&](const PrimState &q) {
++                  const real_t gp = gamma0 * q.p;
++                  const real_t B2 = Bx*Bx + q.By*q.By + q.Bz*q.Bz;
++                  
++                  return sqrt(0.5 * (gp + B2 + sqrt((gp + B2)*(gp + B2) - 4.0*gp*Bx*Bx)) / q.rho);
++                };
++                
++                
++                real_t cfl = computeFastMagnetoAcousticSpeed(qleft);
++                real_t cfr = computeFastMagnetoAcousticSpeed(qright);
++                
++                // HLL Wave speed
++                real_t Sl = fmin(ul, ur) - fmax(cfl, cfr);
++                real_t Sr = fmax(ul, ur) + fmax(cfl, cfr);
++
++                // Lagrangian speed of sound
++                const real_t rCl = rl*(ul-Sl);
++                const real_t rCr = rr*(Sr-ur);
++
++                // Entropy wave speed
++                const real_t uS = (rCr*ur + rCl*ul - pTr + pTl) / (rCr+rCl);
++                
++                // Single Star state
++                const real_t pTS = (rCr*pTl + rCl*pTr - rCr*rCl*(ur-ul)) / (rCr+rCl); 
++
++                // Single star densities
++                const real_t rlS = rl * (Sl-ul)/(Sl-uS);
++                const real_t rrS = rr * (Sr-ur)/(Sr-uS);
++
++
++                // Alfven wave speeds
++                const real_t srlS = sqrt(rlS);
++                const real_t srrS = sqrt(rrS);
++                const real_t SlS = uS - fabs(Bx) / srlS;
++                const real_t SrS = uS + fabs(Bx) / srrS;
++
++                   
++                // Disjunction of cases
++                real_t p_tot = 0.0;
++                if (Sl > 0.0) { // qL
++                  p_tot = pTl;
++                }
++                else if (SlS > 0.0) { // qL*
++                  p_tot = pTS;
++                }
++                else if (uS > 0.0) { // qL**
++                  p_tot = pTS;
++                }
++                else if (SrS > 0.0) { // qR**
++                  p_tot = pTS;
++                }
++                else if (Sr > 0.0) { // qR*
++                  p_tot = pTS;
++                }
++                else { // SR < 0.0; qR
++                  p_tot = pTr;
++                }
++            return p_tot;
+           };
++
+           real_t pL=0.0, pR=0.0;
+   
+           // Compute left side flux
+@@ -291,7 +345,7 @@ Hyperbolic_WellBalanced_RK2(
+ 
+                 // Solving
+                 fluxL = policy.riemann_solver(qL, qC, dir);
+-                pL    = get_pressure(qL, qC);
++                pL    = get_pressure(qL, qC, dir);
+                 
+                 // Adding flux to the neighbor if it is bigger
+                 if (Ldiff == 1) 
+@@ -331,7 +385,7 @@ Hyperbolic_WellBalanced_RK2(
+ 
+                 // Solving
+                 fluxR = policy.riemann_solver(qC, qR, dir);
+-                pR    = get_pressure(qC, qR);
++                pR    = get_pressure(qC, qR, dir);
+ 
+                 // Adding flux to the neighbor if it is bigger
+                 if (Rdiff == 1)
+@@ -348,9 +402,9 @@ Hyperbolic_WellBalanced_RK2(
+                 PrimState qL = qC0 - 0.5 * slope_C;
+                 ConsState fluxL_hydro{}, fluxL_mhd{}, fluxL_glm{};
+                 fluxL = ConsState{};
+-                real_t Bx, By, Bz, pmag;
++                real_t By, Bz, pmag;
+               if (dir == IY){
+-                Bx = 0.0; By = qL.By; Bz = 0.0;
++                By = qL.By; Bz = 0.0;
+                 pmag = 0.5 * By * By;
+                 fluxL_hydro.rho_v = pR - qC0.rho*gval*size_C;
+                 // Modification of the hydro flux
+@@ -362,7 +416,7 @@ Hyperbolic_WellBalanced_RK2(
+                 fluxL_glm.psi     = c_h*c_h * By;
+               }
+               else if (dir == IZ){
+-                  Bx = 0.0; By = 0.0; Bz = qL.Bz;
++                  By = 0.0; Bz = qL.Bz;
+                   pmag = 0.5 * Bz * Bz;
+                   fluxL_hydro.rho_w = pR - qC0.rho*gval*size_C;
+                   // Modification of the hydro flux
+@@ -380,10 +434,10 @@ Hyperbolic_WellBalanced_RK2(
+                 PrimState qR = qC0 + 0.5 * slope_C;
+                 ConsState fluxR_hydro{}, fluxR_mhd{}, fluxR_glm{};
+                 fluxR = ConsState{};
+-                real_t Bx, By, Bz;
++                real_t By, Bz;
+                 real_t pmag;
+               if (dir == IY){
+-                Bx = 0.0; By = qR.By; Bz = 0.0;
++                By = qR.By; Bz = 0.0;
+                 pmag = 0.5 * By * By;
+                 fluxR_hydro.rho_v = pL + qC0.rho*gval*size_C;
+                 // Modification of the hydro flux
+@@ -395,7 +449,7 @@ Hyperbolic_WellBalanced_RK2(
+                 fluxR_glm.psi     = c_h*c_h * By;
+               }
+               else if (dir == IZ){
+-                Bx = 0.0; By = 0.0; Bz = qR.Bz;
++                By = 0.0; Bz = qR.Bz;
+                 pmag = 0.5 * Bz * Bz;
+                 fluxR_hydro.rho_w = pL + qC0.rho*gval*size_C;
+                 // Modification of the hydro flux
+@@ -459,7 +513,7 @@ private:
+   typename Policy::Params policy_params;
+ 
+   int ndim;
+-  real_t smallr, smallp, smallc, gamma0;
++  real_t smallr, smallp, smallc, smalle, gamma0;
+   bool well_balanced_at_boundary;
+   bool gravity_enabled;
+   real_t gval;
