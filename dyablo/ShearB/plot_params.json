@@ -56,5 +56,32 @@
         "fields": ["rho", "rho_vx", "rho_vy", "e_tot", "Bx", "By"],
         "NLabel_X": 3,
         "NLabel_Y": 2
+    },
+    "tmp": {
+        "directory": "tmp/",
+        "snapshot": null,
+        "main_file": "pmag_test_main.xmf",
+        "plot_series": true,
+        "fields": ["rho", "rho_vx", "rho_vy", "e_tot", "Bx", "By"],
+        "NLabel_X": 3,
+        "NLabel_Y": 2
+    },
+    "euler_plm": {
+        "directory": "20251108_GLMMHDEuler_WB/",
+        "snapshot": null,
+        "main_file": "euler_wb_main.xmf",
+        "plot_series": true,
+        "fields": ["rho", "rho_vx", "rho_vy", "e_tot", "Bx", "By"],
+        "NLabel_X": 3,
+        "NLabel_Y": 2
+    },
+    "euler_pcm": {
+        "directory": "20251108_GLMMHDEuler_WB_PCM/",
+        "snapshot": null,
+        "main_file": "euler_PCM_wb_main.xmf",
+        "plot_series": true,
+        "fields": ["rho", "rho_vx", "rho_vy", "e_tot", "Bx", "By"],
+        "NLabel_X": 3,
+        "NLabel_Y": 2
     }
 }

@@ -6,7 +6,7 @@ import json
 
 from dataclasses import dataclass
 
-DATA_TO_PLOT = "wb_total_pressure_bugfix"
+DATA_TO_PLOT = "euler_pcm"
 @dataclass
 class PlotParams:
     directory: str
@@ -65,6 +65,19 @@ for snapshot_name in all_iterations:
 # s.print()
 
     print("Plotting file:", os.path.join(params.directory, file_path))
+    fig = plt.figure(figsize=(10, 10))
+    fig.suptitle(f'Field profiles along line x=0.5, z=0.5 at time {s.getTime():.2f}')
+    plt.xlabel('y')
+    plt.ylabel('$v_z$')
+    rho = np.array(s.probeDensity(line))
+    # plt.yticks(np.linspace(1e-3, 1e-3, 10))
+    plt.hlines(0, 0, 1, color='red', linestyles='dashed')
+    plt.plot(y, np.array(s.probeQuantity(line, 'rho_vy'))/rho, '.', label='$v_z$')
+    plt.savefig("imgs/plot_vz_" + snapshot_name.replace('.xmf', '.png'))
+    plt.xlim(0,1)
+    plt.ylim(-1e-3, 1e-3)
+    plt.close(fig)
+
     fig, ax = plt.subplots(NLABEL_X, NLABEL_Y, sharex=True, figsize=(10,10))
     fig.supxlabel('y')
     fig.suptitle(f'Field profiles along line x=0.5, z=0.5 at time {s.getTime():.2f}')
