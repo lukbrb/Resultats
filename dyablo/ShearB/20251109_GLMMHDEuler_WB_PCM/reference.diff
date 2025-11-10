@@ -1,0 +1,40 @@
+diff --git a/core/src/hyperbolic/scheme/Hyperbolic_WellBalanced_euler.h b/core/src/hyperbolic/scheme/Hyperbolic_WellBalanced_euler.h
+index 6db27be5..6a450b44 100644
+--- a/core/src/hyperbolic/scheme/Hyperbolic_WellBalanced_euler.h
++++ b/core/src/hyperbolic/scheme/Hyperbolic_WellBalanced_euler.h
+@@ -381,7 +381,7 @@ public:
+                 Bx=0.0; By = qL.By; Bz = 0.0;
+                 pm_out = 0.5 * (Bx*Bx + By*By + Bz*Bz);
+                 // TODO: Ajouter la contribution de By^2, pour l'annuler dans f(rho_v) ?
+-                pg_out = (ptR - pm_out) - qC0.rho*gval*size_C;
++                pg_out = (ptR - pm_out) - qC0.rho*gval*size_C + By*By;
+                 fluxL_hydro.rho_v = pg_out;
+                 // Modification of the hydro flux
+                 fluxL_mhd.rho_v    = -By*By + pm_out;
+@@ -394,7 +394,7 @@ public:
+               else if (dir == IZ){
+                   Bx=0.0; By = 0.0; Bz = qL.Bz;
+                   pm_out = 0.5 * (Bx*Bx + By*By + Bz*Bz);
+-                  pg_out = (ptR - pm_out) - qC0.rho*gval*size_C;
++                  pg_out = (ptR - pm_out) - qC0.rho*gval*size_C + Bz*Bz;
+                   fluxL_hydro.rho_w = pg_out;
+                   // Modification of the hydro flux
+                   fluxL_mhd.rho_w   = -Bz*Bz + pm_out;
+@@ -416,7 +416,7 @@ public:
+               if (dir == IY){
+                 Bx=0.0, By = qR.By; Bz = 0.0;
+                 pm_out = 0.5 * (Bx*Bx + By*By + Bz*Bz);
+-                pg_out = (ptL - pm_out) + qC0.rho*gval*size_C;
++                pg_out = (ptL - pm_out) + qC0.rho*gval*size_C + By*By;
+                 fluxR_hydro.rho_v = pg_out;
+                 // Modification of the hydro flux
+                 fluxR_mhd.rho_v   = -By*By + pm_out;
+@@ -429,7 +429,7 @@ public:
+               else if (dir == IZ){
+                 Bx = 0.0; By = 0.0; Bz = qR.Bz;
+                 pm_out = 0.5 * (Bx*Bx + By*By + Bz*Bz);
+-                pg_out = (ptL - pm_out) + qC0.rho*gval*size_C;
++                pg_out = (ptL - pm_out) + qC0.rho*gval*size_C + Bz*Bz;
+                 fluxR_hydro.rho_w = pg_out;
+                 // Modification of the hydro flux
+                 fluxR_mhd.rho_w   = -Bz*Bz + pm_out;
